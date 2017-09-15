@@ -13,14 +13,24 @@ import java.util.Observer;
  */
 public class Constraint implements Observer
 {
-	ArrayList<Term<?>> expression = new ArrayList<Term<?>>();
+	protected ArrayList<Term<?>> expression = new ArrayList<Term<?>>();
+	protected String name;
+	protected boolean active = true;
 	/**
 	 * 
 	 */
-	public Constraint(){}
-	public Constraint(Term<?> arg0){this.expression.add(arg0);}
-
-	@Override
+	
+	//Constructors
+	public Constraint(String arg0){this.name = arg0;}
+	public Constraint(String arg0, Term<?> arg1){this.name = arg0; this.expression.add(arg1);}
+	public Constraint(String arg0, Term<?> arg1, boolean arg2){this.name = arg0; this.expression.add(arg1);this.active = arg2;}
+	
+	public boolean  getActive()
+	{
+		return this.active;
+	}
+	
+	@Override 
 	public void update(Observable arg0, Object arg1) 
 	{
 		
