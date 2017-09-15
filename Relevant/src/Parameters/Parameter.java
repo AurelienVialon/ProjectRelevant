@@ -10,7 +10,7 @@ import java.util.Observable;
  * @author Aurélien Vialon
  *
  */
-public abstract class Parameter<T> extends Observable
+public class Parameter<T> extends Observable
 {
 	protected String name;
 	
@@ -36,5 +36,5 @@ public abstract class Parameter<T> extends Observable
 	public int getId(){return this.id;}
 	
 	public synchronized T getValue (){return this.value;}
-	public abstract boolean setValue(T arg0);
+	public void setValue(T arg0){this.value = arg0;}
 }

@@ -22,6 +22,11 @@ public class Relevance
 		this.args.add(arg0);
 	}
 	
+	public int getValue()
+	{
+		return this.value;
+	}
+	
 	public synchronized int calculation ()
 	{
 		this.value = 100;
