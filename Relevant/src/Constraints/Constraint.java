@@ -11,7 +11,7 @@ import java.util.Observer;
  * @author aurel
  *
  */
-public class Constraint implements Observer
+public abstract class Constraint implements Observer
 {
 	protected ArrayList<Term<?>> expression = new ArrayList<Term<?>>();
 	protected String name;
@@ -24,6 +24,9 @@ public class Constraint implements Observer
 	public Constraint(String arg0){this.name = arg0;}
 	public Constraint(String arg0, Term<?> arg1){this.name = arg0; this.expression.add(arg1);}
 	public Constraint(String arg0, Term<?> arg1, boolean arg2){this.name = arg0; this.expression.add(arg1);this.active = arg2;}
+	
+	public Constraint(Term<?> arg1){this.expression.add(arg1);}
+	public Constraint(Term<?> arg1, boolean arg2){this.expression.add(arg1);this.active = arg2;}
 	
 	public boolean  getActive()
 	{
@@ -48,5 +51,10 @@ public class Constraint implements Observer
 			}
 		}	
 		return ret;
+	}
+	
+	public String getName()
+	{
+		return this.name;
 	}
 }

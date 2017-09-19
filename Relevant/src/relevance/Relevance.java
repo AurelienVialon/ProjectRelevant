@@ -4,13 +4,13 @@ import java.util.ArrayList;
 
 
 import Argument.Argument;
-import Constraints.QualityConstraint;
+import Constraints.QC;
 
 public class Relevance
 {
 	private int value;
 	
-	private QualityConstraint qc ;
+	private QC qc ;
 	
 	private ArrayList<Argument<?>> args;
 	

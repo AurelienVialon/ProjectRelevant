@@ -12,8 +12,19 @@ import relevance.Relevance;
  * @author aurel
  *
  */
-public class QualityConstraint extends Constraint
+public class QC extends Constraint
 {
+	public QC(String arg0, Term<?> arg1) 
+	{
+		super(arg0, arg1);
+		// TODO Auto-generated constructor stub
+	}
+	public QC(Term<?> arg0) 
+	{
+		super(arg0);
+		// TODO Auto-generated constructor stub
+	}
+
 	private Relevance r;
 
 	private int ExpectedSuccessRate = 100;
@@ -27,14 +38,6 @@ public class QualityConstraint extends Constraint
 		super();
 		this.linked_SG = new ArrayList<SoftGoal>();
 	}*/
-	public QualityConstraint(String arg0, Term<?> arg1)
-	{
-		super(arg0, arg1);
-	}
-	public QualityConstraint(String arg0, Term<?> arg1, boolean arg2)
-	{
-		super(arg0, arg1, arg2);
-	}
 	
 	public void setExpectedSuccessRate(int arg0)
 	{
