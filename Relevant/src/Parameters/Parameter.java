@@ -40,7 +40,7 @@ public abstract class Parameter<T> extends Observable
 	{
 		return this.Treatement();
 	}
-	public void setValue(T arg0){};
+	public synchronized void setValue(T arg0){};
 	
 	protected T Treatement()
 	{
