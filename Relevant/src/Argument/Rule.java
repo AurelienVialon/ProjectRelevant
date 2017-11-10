@@ -1,10 +1,10 @@
 package Argument;
 
-import Constraints.Term;
+import logic.Term;
 
 public class Rule 
 {
-	Term term;
+	private Term term;
 	
 	public Rule(Term arg0) {this.term = arg0;}
 }

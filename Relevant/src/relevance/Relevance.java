@@ -12,12 +12,12 @@ public class Relevance
 	
 	private QC qc ;
 	
-	private ArrayList<Argument<?>> args;
+	private ArrayList<Argument> args;
 	
 	
 	public Relevance() {}
 	
-	public void addArgument(Argument<?> arg0)
+	public void addArgument(Argument arg0)
 	{	
 		this.args.add(arg0);
 	}
@@ -31,15 +31,14 @@ public class Relevance
 	{
 		this.value = 100;
 		
-		for(Argument<?> a : this.args)
+		for(Argument a : this.args)
 		{
-			if(!a.valid())
-				this.value -= a.getRelevanceImpact();
+			this.value -= a.getRelevanceImpact();
 		}
 		return this.value;
 	}
 	
-	public synchronized String update(Argument<?> arg0) 
+	public synchronized String update(Argument arg0) 
 	{	
 		String ret = "OK";
 		

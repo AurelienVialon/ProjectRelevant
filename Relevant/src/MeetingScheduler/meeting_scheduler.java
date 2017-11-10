@@ -5,13 +5,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 import Constraints.QC;
-import Constraints.Term;
 import MVC.Commande;
 import MVC.Message;
 import MVC.Modele;
 import MeetingScheduler.parameters.Participants;
 import MeetingScheduler.parameters.ParticipantsRatio;
 import MeetingScheduler.parameters.Participants_scheduled;
+import logic.Term;
 
 public class meeting_scheduler extends Modele
 {

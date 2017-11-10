@@ -6,6 +6,7 @@ package Constraints;
 import java.util.ArrayList;
 
 import Argument.Argument;
+import logic.Term;
 import relevance.Relevance;
 
 /**
@@ -71,26 +72,26 @@ public class QC extends Constraint
 		return this.r.getValue();
 	}
 	
-	public boolean Justify(Argument<?> arg0)
+	public boolean Justify(Argument arg0)
 	{
 		if(this.r == null)
 				this.r = new Relevance();
 		
 		return this.AttacheArgument(arg0);
 	}
-	public boolean Justify(ArrayList<Argument<?>> arg0)
+	public boolean Justify(ArrayList<Argument> arg0)
 	{
 		if(this.r == null)
 			 this.r = new Relevance();
 		boolean ret = true;
 		
-		for (Argument<?> a : arg0)
+		for (Argument a : arg0)
 			ret = this.AttacheArgument(a);
 		
 		return ret;
 	}
 	
-	private boolean AttacheArgument(Argument<?> arg0)
+	private boolean AttacheArgument(Argument arg0)
 	{
 		boolean ret = true;
 		

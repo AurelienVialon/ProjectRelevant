@@ -1,0 +1,56 @@
+*/
+QUALITY CONSTRAINTS DECLARATION FILE FOR RELEVANCE PROJECT
+
+This is a quality constraints for the Relevance Project of Aurelien VIALON's Ph. D
+
+The pattern of this file is the following one :
+
+param/
+Declaration of one system's parameter name
+Parameters shall preceed quality constraints' declaration
+/param
+
+qc/ Start of declaration of one quality constraint
+/name Declaration of quality constraint name /name
+/exp Declaration of quality constraint expression /exp
+
+
+arg/ Start of one argument's declaration
+name/ Declaration of argument's name/name
+fact/ Declaration of argument's fact to check/fact
+rule/ Declaration of argument's related rule /rule
+RI/ Declaration of argument's relevance impact/RI
+/arg* end of one argument's declaration
+
+/qc End of declaration of one quality constraint
+
+/*
+
+param/
+nb_people
+param/
+participants
+
+qc/
+
+name/
+participant max
+expression/
+/term 
+participants
+/term
+multiply(nb_people,0.9) 
+/operator
+
+arg/
+fact/
+nb_people < 18
+rule/
+90% of participants
+
+RI/
+15
+/RI
+/arg
+
+/qc
