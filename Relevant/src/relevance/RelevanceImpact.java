@@ -1,4 +1,4 @@
-package Argument;
+package relevance;
 
 public class RelevanceImpact 
 {

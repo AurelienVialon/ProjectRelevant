@@ -8,8 +8,13 @@ package MVC;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.AbstractButton;
+
+import Constraints.Constraint;
+import exampleWorkingAgents.WorkingAgent;
 
 /**
  *
@@ -21,9 +26,9 @@ import javax.swing.AbstractButton;
  */
 public abstract class Controleur implements ActionListener 
 {
-    protected Modele m;
-    protected Thread t;
-    
+    //protected Modele m;
+	Map<String, ModeleThreaded> modeles = new HashMap<>();
+	
     protected ArrayList<Vue> v = new ArrayList<Vue>();
     
     public Controleur()
@@ -44,19 +49,23 @@ public abstract class Controleur implements ActionListener
      } 
      protected void Init ( Modele m )
      {
-         this.m = m;
+    	 this.modeles.put(m.Name, new ModeleThreaded(m));
      }
      protected void Init ( Modele m , Vue v)
      {
-         this.m = m;
+         this.modeles.put(m.Name, new ModeleThreaded(m));
          this.addVue(v);
          this.Init_Ecoutes(v);
      }
         
+     public void ajtModele(Modele m)
+     {
+    	 this.modeles.put(m.Name, new ModeleThreaded(m));
+     }
     //Méthode d'obtention.
-    public Modele donne_modele()
+    public Modele donne_modele(String arg0)
     {
-        return this.m;
+        return this.modeles.get(arg0).getModele();
     }
     
     public ArrayList<Vue> donne_vues()
@@ -102,26 +111,29 @@ public abstract class Controleur implements ActionListener
     {
         for(Vue v : this.v)
         {
-        	this.m.ajouter_lien(v);
+        	for (Map.Entry<String, ModeleThreaded> entry : this.modeles.entrySet()) 
+    		{
+    			entry.getValue().getModele().ajouter_lien(v);
+    		}
         }
     }
     //Connect the Specified Vue.
-    public void Lien_Vue_Modele ( Vue v )
+    public void Lien_Vue_Modele ( Vue arg0, String arg1)
     {
-        this.m.ajouter_lien(v);
+        this.modeles.get(arg1).getModele().ajouter_lien(arg0);
     }
     //Connect the Specified Vue.
-    public void Lien_Vue_Modele ( ArrayList<Vue> v )
+    public void Lien_Vue_Modele ( ArrayList<Vue> arg0, String arg1 )
     {
-    	for(Vue vue : v)
+    	for(Vue vue : arg0)
     	{
-            this.m.ajouter_lien(vue);
+            this.modeles.get(arg1).getModele().ajouter_lien(vue);
     	}
     }
     
-    public void Init_Ecoutes(Vue v)
+    public void Init_Ecoutes(Vue arg0)
     {
-    	for(AbstractButton ct : v.get_aEcouter())
+    	for(AbstractButton ct : arg0.get_aEcouter())
     	{
     		ct.addActionListener(this);
     	}
@@ -129,11 +141,35 @@ public abstract class Controleur implements ActionListener
     
     public void Lancement ()
     {
-        this.t = new Thread(m); 
-        t.start();
+    	for (Map.Entry<String, ModeleThreaded> entry : this.modeles.entrySet()) 
+		{
+    		Thread t = new Thread(entry.getValue().getModele());
+			entry.getValue().setThread(t);
+			t.start();
+		}
     }
+    
     public void RepriseModele ()
     {
-        this.m.retour();
+    	for (Map.Entry<String, ModeleThreaded> entry : this.modeles.entrySet()) 
+		{
+			entry.getValue().getModele().retour();
+		}
+    }
+    public void RepriseModele (String arg0)
+    {
+        this.modeles.get(arg0).getModele().retour();
+    }
+  
+    public void envoyer(Message arg0)
+    {
+      	for (Map.Entry<String, ModeleThreaded> entry : this.modeles.entrySet()) 
+    		{
+    			entry.getValue().getModele().deposerMessage(arg0);
+    		}
+    }
+    public void envoyer(Message arg0, String arg1)
+    {
+    	this.modeles.get(arg1).getModele().deposerMessage(arg0);
     }
 }

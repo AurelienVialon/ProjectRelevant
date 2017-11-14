@@ -1,51 +1,37 @@
 package relevance;
 
-import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-
-import Argument.Argument;
-import Constraints.QC;
+import MVC.ModeleThreaded;
 
 public class Relevance
 {
-	private int value;
+	int value;
+	HashMap<String, Argument> related_arguments;
 	
-	private QC qc ;
+	public Relevance()
+	{
+		this.related_arguments = new HashMap<>();
+	}
+	public Relevance(HashMap<String, Argument> arg0) 
+	{
+		this.related_arguments = arg0;
+	}
 	
-	private ArrayList<Argument> args;
-	
-	
-	public Relevance() {}
+	public int calculate()
+	{
+		int totale_relevance_impact = 0;
+      	for (Map.Entry<String,Argument> entry : this.related_arguments.entrySet()) 
+    		{
+    			totale_relevance_impact += entry.getValue().getRelevanceImpact();
+    		}
+
+		return this.value = totale_relevance_impact / this.related_arguments.size();
+	}
 	
 	public void addArgument(Argument arg0)
-	{	
-		this.args.add(arg0);
-	}
-	
-	public int getValue()
 	{
-		return this.value;
-	}
-	
-	public synchronized int calculation ()
-	{
-		this.value = 100;
-		
-		for(Argument a : this.args)
-		{
-			this.value -= a.getRelevanceImpact();
-		}
-		return this.value;
-	}
-	
-	public synchronized String update(Argument arg0) 
-	{	
-		String ret = "OK";
-		
-		if(this.args.contains(arg0))
-			this.value -= arg0.getRelevanceImpact();
-		else
-			ret = "null";
-		return ret;
+		this.related_arguments.put(arg0.getName(),arg0);
 	}
 }

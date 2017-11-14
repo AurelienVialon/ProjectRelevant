@@ -46,12 +46,7 @@ public abstract class Vue implements Observer
     @Override
     public abstract void update(Observable o, Object ob); 
     
-    //Si l'on souhaite modifier le modèle que suit cette vue par cette vue.
-    protected void maj_mod(Modele m)
-    {
-       this.c.donne_modele().addObserver(this);
-    }
-	/**
+  	/**
 	 * @return the cp
 	 */
 	public Component getCp() 

@@ -14,28 +14,20 @@ package MVC;
 public class Message 
 {
     //Classe qui nous permettra de passer des messages entre les modeles et les vues.
-    public String s;
-    public Object o;
+    public Object attache;
     
-    public Message ( String s )
+    public Message ()
     {
-        this.s = s;
-        this.o = null;
+        this.attache = null;
     }
     
-    public Message ( String s, Object o )
+    public Message ( Object o )
     {
-        this.s = s;//Le contenu écrit du message.
-        this.o = o;//Si l'on veut faire passer un objet en même temps.
-    }
-    
-    public String code() 
-    {
-        return s;
+        this.attache = o;//Si l'on veut faire passer un objet en meme temps.
     }
     
     public Object objet() 
     {
-        return o;
+        return this.attache;
     }
 }

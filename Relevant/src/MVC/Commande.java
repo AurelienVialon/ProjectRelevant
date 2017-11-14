@@ -7,10 +7,10 @@ package MVC;
  * @param <T>
  *
  */
-public class Commande<T>
+public class Commande<T> extends Message
 {
-	String type;
-	T attache; 
+	private String type;
+	private T attache; 
 	/**
 	 * 
 	 */
@@ -26,6 +26,10 @@ public class Commande<T>
 	public String donneType()
 	{
 		return this.type;
+	}
+	public void setType(String arg0)
+	{
+		this.type = arg0;
 	}
 	public T donneObjet()
 	{

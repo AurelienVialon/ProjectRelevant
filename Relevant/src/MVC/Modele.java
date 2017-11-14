@@ -27,6 +27,12 @@ public abstract class Modele extends Observable implements Runnable
     
 	protected String flagMaj;
     
+	public Modele(String arg0)
+	{
+		super();
+		this.Name = arg0;
+	}
+	
     public void pause ()
     {
         en_pause = true;
@@ -58,7 +64,7 @@ public abstract class Modele extends Observable implements Runnable
         		{
         			if (this.bol.size() > 0)
         			{
-                    	this.executerCommande(this.messageCommande(this.ouvrirBol()));
+                    	this.executerCommande((Commande)this.ouvrirBol());
                     	this.Maj();
         			}
         			else
@@ -138,6 +144,4 @@ public abstract class Modele extends Observable implements Runnable
 				
 		return m;
 	}
-	
-	protected abstract Commande<?> messageCommande(Message m);
 }

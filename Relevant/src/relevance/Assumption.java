@@ -1,7 +1,7 @@
 /**
  * 
  */
-package Argument;
+package relevance;
 
 import java.util.ArrayList;
 

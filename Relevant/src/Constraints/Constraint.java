@@ -8,16 +8,19 @@ import java.util.Observable;
 import java.util.Observer;
 
 import logic.Term;
+import relevance.Relevance;
 
 /**
  * @author aurel
  *
  */
-public abstract class Constraint implements Observer
+public class Constraint implements Observer
 {
 	protected ArrayList<Term<?>> expression = new ArrayList<Term<?>>();
 	protected String name;
 	protected boolean active = true;
+	
+	protected Relevance relevance; 
 	/**
 	 * 
 	 */
@@ -46,7 +49,7 @@ public abstract class Constraint implements Observer
 		
 		for(Term<?> t : this.expression)
 		{
-			if(!t.test())
+			if(!t.get_Checking())
 			{
 				ret = t;
 				break;
