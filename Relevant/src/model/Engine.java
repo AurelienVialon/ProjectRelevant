@@ -5,11 +5,14 @@ package model;
 
 import java.util.ArrayList;
 
-import Constraints.Constraint;
-import Constraints.ConstraintsManager;
 import MVC.Modele;
-import Parameters.Parameter;
-import Parameters.Parameters;
+import constraints.Constraint;
+import constraints.ConstraintsManager;
+import exampleWorkingAgents.ConstraintName;
+import exampleWorkingAgents.ParameterName;
+import parameters.Parameter;
+import parameters.Parameters;
+import relevance.Argument;
 
 /**
  * @author Aurélien Vialon
@@ -46,11 +49,11 @@ public abstract class Engine extends Modele
 	}
 	
 		
-	public synchronized Parameter<?> getParameter(String arg0)
+	public synchronized Parameter<?> getParameter(ParameterName arg0)
 	{
 		return this.param.get(arg0);
 	}
-	public synchronized <T> void modifParameter(String arg0, T arg1)
+	public synchronized <T> void modifParameter(ParameterName arg0, T arg1)
 	{
 		Parameter<T> p = (Parameter<T>)this.param.get(arg0);
 		if(p!= null)
@@ -60,6 +63,22 @@ public abstract class Engine extends Modele
 				p.setValue(arg1);
 			}
 		}	
+	}
+	
+	public Constraint MakeConstraint(ConstraintName arg0, Argument arg1)
+	{
+		return new Constraint(arg0, arg1);
+	}
+	public Constraint MakeConstraint(ConstraintName arg0, ArrayList<Argument> arg1)
+	{
+		return new Constraint(arg0, arg1);
+	}
+	
+	
+	public void buildConstraints()
+	{
+	 	this.qcs.build();
+
 	}
 	public Action decide()
 	{

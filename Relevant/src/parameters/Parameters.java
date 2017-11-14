@@ -1,11 +1,13 @@
-package Parameters;
+package parameters;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import exampleWorkingAgents.ParameterName;
+
 public class Parameters 
 {
-	Map<String, Parameter<?>> parameters = new HashMap<>();
+	Map<ParameterName, Parameter<?>> parameters = new HashMap<>();
 	
 	public Parameters() 
 	{
@@ -18,11 +20,11 @@ public class Parameters
 		this.parameters.put(arg0.getName(), arg0);
 	}
 	
-	public Parameter<?> get(String arg0)
+	public Parameter<?> get(ParameterName arg0)
 	{
 		return this.parameters.get(arg0);
 	}
-	public Map<String, Parameter<?>> get()
+	public Map<ParameterName, Parameter<?>> get()
 	{
 		return this.parameters;
 	}

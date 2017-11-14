@@ -13,7 +13,7 @@ import java.util.Map;
 
 import javax.swing.AbstractButton;
 
-import Constraints.Constraint;
+import constraints.Constraint;
 import exampleWorkingAgents.WorkingAgent;
 
 /**

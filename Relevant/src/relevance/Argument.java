@@ -1,70 +1,66 @@
 package relevance;
 
-import logic.Term;
+import java.util.ArrayList;
+
+import constraints.Term;
+import exampleWorkingAgents.ArgumentName;
 
 public class Argument 
 {
-	private String name = "";
+	private ArgumentName name;
 	private Term<?> assumption;
 	private Term<?> rule;
-	private RelevanceImpact ri = null;
 	
-	public Argument(String arg0, Term<?> arg1, Term arg2) 
+	public Argument(ArgumentName arg0, Term<?> arg1, Term<?> arg2) 
 	{
 		this.name = arg0;
 		this.assumption = arg1;
 		this.rule = arg2;
 	}
-	public Argument(String arg0, Term<?> arg1, Term arg2, int arg3) 
+	public int calculateRelevanceImpact()
 	{
-		this.name = arg0;
-		this.assumption = arg1;
-		this.rule = arg2;
-		this.ri = new RelevanceImpact() {
-			@Override
-			public int calculate()
-			{
-				return arg3;
-			}
-		};
+		//To be defined by engineers at the argument definition.
+		return 0;
 	}
-
-	public int check()
+	public int MappedRelevance(int arg0)
 	{
-		return this.relevanceImpactCalculation();
+		int ret = 0;
+		
+		if(this.assumption.expression())
+		{
+			ret = arg0;
+		}
+		else
+		{
+			ret = 0;
+		}
+		return ret;
 	}
-	private boolean valid()
+	public int MappedRelevance(int arg0, int arg1)
 	{
-		return this.assumption.get_Checking();
-	}
-	
-	private int relevanceImpactCalculation()
-	{
-		return this.ri.calculate();
-	}
-	
-	
-	public int getRelevanceImpact()
-	{
-		return this.relevanceImpactCalculation();
-	}
-	public void setRelevanceImpact(int arg0)
-	{
-		this.ri = new RelevanceImpact() {
-			@Override
-			public int calculate()
-			{
-				return arg0;
-			}
-		};
-	}
-	public void setRelevanceImpact(RelevanceImpact arg0)
-	{
-		this.ri = arg0;
+		int ret = 0;
+		
+		if(this.assumption.expression())
+		{
+			ret = arg1;
+		}
+		else
+		{
+			ret = arg0;
+		}
+		return ret;
 	}
 	
-	public String getName()
+	public ArgumentName getName()
 	{
 		return this.name;
+	}
+	public Term<?> getRule()
+	{
+		return this.rule;
+	}
+	public Term<?> getAssumption()
+	{
+		return this.assumption;
 	}
 }

@@ -8,8 +8,8 @@ import java.util.Map;
 import MVC.Commande;
 import MVC.Controleur;
 import MVC.Message;
-import Parameters.Parameter;
-import Parameters.Parameters;
+import parameters.Parameter;
+import parameters.Parameters;
 
 public class WorkingAgentsExample extends Controleur
 {
@@ -35,20 +35,24 @@ public class WorkingAgentsExample extends Controleur
 	
 	public void InitParameters()
 	{
-		this.parameters.addParameter( new Parameter<Integer>("NormalWorkingTime", 35, "hours"));
+		this.parameters.addParameter( new Parameter<Integer>(ParameterName.NormalWorkingTime, 35, "hours"));
 		
-		this.parameters.addParameter(new Parameter<Integer>("WorkerNumber", 2, "agents"));	
-		this.parameters.addParameter(new Parameter<Integer>("HoursToWork", 70, "hours"));
+		this.parameters.addParameter(new Parameter<Integer>(ParameterName.NumberOfWorkers, 2, "agents"));	
+		this.parameters.addParameter(new Parameter<Integer>(ParameterName.NormalNumberofWorkers, 2, "agents"));
+		
+		this.parameters.addParameter(new Parameter<Integer>(ParameterName.WorkNeeds, 35, "hours"));
 	}
 	public void InitAgents()
 	{
 		ArrayList<Parameter<?>> parametersList = new ArrayList<>();
-		parametersList.add(this.parameters.get("WorkerNumber"));
-		parametersList.add(this.parameters.get("HoursToWork"));
-		parametersList.add(this.parameters.get("NormalWorkingTime"));
+		parametersList.add(this.parameters.get(ParameterName.NumberOfWorkers));
+		parametersList.add(this.parameters.get(ParameterName.NormalNumberofWorkers));
+		
+		parametersList.add(this.parameters.get(ParameterName.WorkNeeds));
+		parametersList.add(this.parameters.get(ParameterName.NormalWorkingTime));
 		
 		this.ajtModele(new WorkingAgent("Agent1", parametersList));
-		this.ajtModele(new WorkingAgent("Agent2", parametersList));
+		//this.ajtModele(new WorkingAgent("Agent2", parametersList));
 		//this.ajtModele(new WorkingAgent("Agent3", parametersList));
 	}
 	public WorkingAgent getAgent(String arg0)
