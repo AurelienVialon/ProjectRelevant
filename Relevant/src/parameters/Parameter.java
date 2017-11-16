@@ -37,6 +37,10 @@ public class Parameter<T> extends Observable
 	{
 		return this.value;
 	}
-	public synchronized void setValue(T arg0){this.value = arg0;}
+	public synchronized void setValue(T arg0)
+	{
+		this.value = arg0;
+		this.notifyObservers();
+		}
 
 }

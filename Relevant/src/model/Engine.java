@@ -4,6 +4,7 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.Observable;
 
 import MVC.Modele;
 import constraints.Constraint;
@@ -83,5 +84,16 @@ public abstract class Engine extends Modele
 	public Action decide()
 	{
 		return null;
+	}
+	
+	
+	@Override
+	public void update(Observable arg0, Object arg1) 
+	{
+		if(arg0 instanceof Parameter<?>)
+		{
+			Parameter<?> p = (Parameter<?>)arg0;
+			  System.out.println(" Modification of the Parameter " + p.getName() + " detected.");
+		}
 	}
 }

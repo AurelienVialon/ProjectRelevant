@@ -17,9 +17,9 @@ import relevance.Relevance;
  * @author aurel
  *
  */
-public class Constraint implements Observer
+public class Constraint
 {
-	private ArrayList<Term<?>> expression = new ArrayList<Term<?>>();
+	private Term expression = new Term();
 	private ConstraintName name;
 	private boolean active = true;
 	
@@ -57,40 +57,38 @@ public class Constraint implements Observer
 	{
 		return this.active;
 	}
-	
-	@Override 
-	public void update(Observable arg0, Object arg1) 
+	public Term test()
 	{
+		Term ret = null;
 		
-	}
-	public Term<?> test()
-	{
-		Term<?> ret = null;
-		
-		for(Term<?> t : this.expression)
+		if(this.expression.get_Checking())
 		{
-			if(!t.get_Checking())
-			{
-				ret = t;
-				break;
-			}
-		}	
+			ret = this.expression;
+		}
 		return ret;
 	}
 	public void build()
 	{
-		for( Argument a : this.relevance.maximise())
-		{
-			this.expression.add(a.getRule());
-		}
+		this.expression =  this.relevance.maximise();
+		System.out.println(" The definition of " + this.name + " will  be: " + this.expression.getName() + "\n");
+
 	}
-	public int RelevanceCalculation()
+	public void reassess()
 	{
-		return this.relevance.calculate();
+		this.expression = this.RelevanceMaximise();
 	}
-	public ArrayList<Object> RelevanceCalculationDetailed()
+	public void reassessDetailed()
 	{
-		return this.relevance.calculateDetailed();
+		this.expression = this.RelevanceMaximiseDetailed();
+	}
+	
+	private Term RelevanceMaximise()
+	{
+		return this.relevance.maximise();
+	}
+	private Term RelevanceMaximiseDetailed()
+	{
+		return this.relevance.maximiseDetailed();
 	}
 	
 	public ConstraintName getName()
@@ -105,5 +103,15 @@ public class Constraint implements Observer
 	{
 		for(Argument arg : arg0)
 			this.relevance.addArgument(arg);
+	}
+	public int getRelevance()
+	{
+		this.reassess();
+		return this.relevance.getValueRelevance();
+	}
+	public int getRelevanceDetailed()
+	{
+		this.reassessDetailed();
+		return this.relevance.getValueRelevance();
 	}
 }

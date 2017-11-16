@@ -8,15 +8,24 @@ import exampleWorkingAgents.ArgumentName;
 public class Argument 
 {
 	private ArgumentName name;
-	private Term<?> assumption;
-	private Term<?> rule;
+	private int version = -1;
+	private Term assumption;
+	private ArrayList<Term> supportedRules = new ArrayList<Term>();
 	
-	public Argument(ArgumentName arg0, Term<?> arg1, Term<?> arg2) 
+	public Argument(ArgumentName arg0, Term arg1, Term arg2) 
 	{
 		this.name = arg0;
 		this.assumption = arg1;
-		this.rule = arg2;
+		this.supportedRules.add(arg2);
 	}
+	public Argument(ArgumentName arg0, Term arg1, Term arg2, int arg3) 
+	{
+		this.name = arg0;
+		this.assumption = arg1;
+		this.supportedRules.add(arg2);
+		this.version = arg3;
+	}
+
 	public int calculateRelevanceImpact()
 	{
 		//To be defined by engineers at the argument definition.
@@ -55,12 +64,16 @@ public class Argument
 	{
 		return this.name;
 	}
-	public Term<?> getRule()
+	public ArrayList<Term> getSupportedRules()
 	{
-		return this.rule;
+		return this.supportedRules;
 	}
-	public Term<?> getAssumption()
+	public Term getAssumption()
 	{
 		return this.assumption;
+	}
+	public int getVersion()
+	{
+		return this.version;
 	}
 }

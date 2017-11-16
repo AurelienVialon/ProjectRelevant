@@ -17,6 +17,7 @@ public class main {
 		
 		Commande<?> m = new Commande<>("QC_CHECK");
 		Commande<?> m2 = new Commande<>("RELEVANCECALCULATIONDETAILED");
+		//Commande<?> m2 = new Commande<>("RELEVANCECALCULATION");
 		//Commande<?> m2 = new Commande<>("DISPLAY_PARAMETERS_VALUES");
 		ex.envoyer(m);
 		ex.Lancement();

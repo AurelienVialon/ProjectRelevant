@@ -17,7 +17,7 @@ import java.util.Stack;
  * Elle doit être implémenté pour pouvoir être utilisé selon les cas.
  */
 
-public abstract class Modele extends Observable implements Runnable
+public abstract class Modele extends Observable implements Runnable, Observer
 {                 
     protected boolean continuer;   // pour quitter le thread
     protected boolean en_pause;   // pour pauser / depauser
