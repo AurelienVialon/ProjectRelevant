@@ -8,8 +8,10 @@ import java.util.Map;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Set;
+import java.util.TreeSet;
 
 import exampleWorkingAgents.ConstraintName;
+import exampleWorkingAgents.ParameterName;
 import relevance.Argument;
 import relevance.Relevance;
 
@@ -27,7 +29,7 @@ public class Constraint
 	
 	private int Relaxed = 0;
 	private int SuccessRate = 0;
-	
+
 	/**
 	 * 
 	 */
@@ -71,7 +73,11 @@ public class Constraint
 	{
 		this.expression =  this.relevance.maximise();
 		System.out.println(" The definition of " + this.name + " will  be: " + this.expression.getName() + "\n");
-
+		
+		System.out.println("Others definitions are :");
+		
+		for(Term t : this.relevance.getRules())
+			if(t != this.expression){System.out.println("\t" + t.getName());}	
 	}
 	public void reassess()
 	{
@@ -79,7 +85,18 @@ public class Constraint
 	}
 	public void reassessDetailed()
 	{
-		this.expression = this.RelevanceMaximiseDetailed();
+		System.out.println("\n\t Starting of reassessment of " + this.getName() + " constraint.");
+		
+		Term t = this.RelevanceMaximiseDetailed();
+		if(t!= this.expression)
+		{
+			System.out.println(" Changement of the definition of Constraint " + this.getName() + " from " + this.expression.getName() + " to " + t.getName());
+		}	
+		else
+		{
+			System.out.println("No change into the constraint definition");
+		}
+		this.expression = t;
 	}
 	
 	private Term RelevanceMaximise()
@@ -113,5 +130,9 @@ public class Constraint
 	{
 		this.reassessDetailed();
 		return this.relevance.getValueRelevance();
+	}
+	public TreeSet<ParameterName> sensibleTo()
+	{
+		return this.relevance.getTriggers();
 	}
 }

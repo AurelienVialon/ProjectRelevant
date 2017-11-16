@@ -41,6 +41,7 @@ public class WorkingAgentsExample extends Controleur
 		this.parameters.addParameter(new Parameter<Integer>(ParameterName.NormalNumberofWorkers, 2, "agents"));
 		
 		this.parameters.addParameter(new Parameter<Integer>(ParameterName.WorkNeeds, 35, "hours"));
+		this.parameters.addParameter(new Parameter<Boolean>(ParameterName.UrgentToFinish, false));
 	}
 	public void InitAgents()
 	{
@@ -50,6 +51,7 @@ public class WorkingAgentsExample extends Controleur
 		
 		parametersList.add(this.parameters.get(ParameterName.WorkNeeds));
 		parametersList.add(this.parameters.get(ParameterName.NormalWorkingTime));
+		parametersList.add(this.parameters.get(ParameterName.UrgentToFinish));
 		
 		this.ajtModele(new WorkingAgent("Agent1", parametersList));
 		//this.ajtModele(new WorkingAgent("Agent2", parametersList));
@@ -58,5 +60,16 @@ public class WorkingAgentsExample extends Controleur
 	public WorkingAgent getAgent(String arg0)
 	{
 		return (WorkingAgent)this.donne_modele(arg0);
+	}
+	public synchronized <T> void modifParameter(ParameterName arg0, T arg1)
+	{
+		Parameter<T> p = (Parameter<T>)this.parameters.get(arg0);
+		if(p!= null)
+		{
+			synchronized(p)
+			{
+				p.setValue(arg1);
+			}
+		}	
 	}
 }

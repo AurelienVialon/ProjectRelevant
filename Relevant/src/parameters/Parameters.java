@@ -28,4 +28,8 @@ public class Parameters
 	{
 		return this.parameters;
 	}
+	public boolean contains(Object arg0)
+	{
+		return this.parameters.containsKey(arg0);
+	}
 }

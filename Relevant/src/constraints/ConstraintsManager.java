@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import exampleWorkingAgents.ConstraintName;
+import exampleWorkingAgents.ParameterName;
 import relevance.Argument;
 
 public class ConstraintsManager 
@@ -63,5 +64,35 @@ public class ConstraintsManager
 				ret.add(c);
 		}
 		return ret;
+	}
+	public void reassess ()
+	{
+		for (Map.Entry<ConstraintName, Constraint> entry : this.library.entrySet()) 
+		{
+			entry.getValue().reassess();
+		}
+	}
+	public void reassessDetailed ()
+	{
+		for (Map.Entry<ConstraintName, Constraint> entry : this.library.entrySet()) 
+		{
+			entry.getValue().reassessDetailed();
+		}
+	}
+	public void reassess (ParameterName arg0)
+	{
+		for (Map.Entry<ConstraintName, Constraint> entry : this.library.entrySet()) 
+		{
+			if(entry.getValue().sensibleTo().contains(arg0))
+				entry.getValue().reassess();
+		}
+	}
+	public void reassessDetailed (ParameterName arg0)
+	{
+		for (Map.Entry<ConstraintName, Constraint> entry : this.library.entrySet()) 
+		{
+			if(entry.getValue().sensibleTo().contains(arg0))
+				entry.getValue().reassessDetailed();
+		}
 	}
 }

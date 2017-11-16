@@ -1,8 +1,11 @@
 package constraints;
 
+import parameters.Parameter;
+
 public class Term
 {
 	private String name;
+
 	//To be defined by the engineers at development time.
 	public Term()
 	{

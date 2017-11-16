@@ -9,5 +9,6 @@ public enum ParameterName {
 	NormalNumberofWorkers,
 	ProjectWorkNeed,
 	Sick,
-	NothingElseToDo;
+	NothingElseToDo, 
+	UrgentToFinish;
 }

@@ -4,6 +4,8 @@
 package model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Observable;
 
 import MVC.Modele;
@@ -24,6 +26,8 @@ public abstract class Engine extends Modele
 	protected Parameters param = new Parameters();
 	protected ConstraintsManager qcs;
 	protected ArrayList<Constraint> violated_qcs = new ArrayList<>();
+	
+	private HashMap<ParameterName, Argument> argumentSensibleToParameter = new HashMap<>();
 
 	/**
 	 * 
@@ -86,6 +90,23 @@ public abstract class Engine extends Modele
 		return null;
 	}
 	
+	public void reassess()
+	{
+		this.qcs.reassess();
+	}
+	public void reassessDetailed()
+	{
+		this.qcs.reassessDetailed();
+	}
+	
+	public void reassess(ParameterName arg0)
+	{
+		this.qcs.reassess(arg0);
+	}
+	public void reassessDetailed(ParameterName arg0)
+	{
+		this.qcs.reassessDetailed(arg0);
+	}
 	
 	@Override
 	public void update(Observable arg0, Object arg1) 
@@ -93,7 +114,34 @@ public abstract class Engine extends Modele
 		if(arg0 instanceof Parameter<?>)
 		{
 			Parameter<?> p = (Parameter<?>)arg0;
-			  System.out.println(" Modification of the Parameter " + p.getName() + " detected.");
+			  System.out.println("\n Modification of the Parameter " + p.getName() + " detected.");
+			  System.out.println(" Reassessment of the related requirements :");
+			  this.reassessDetailed();
+		}
+	}
+	
+	public void calculateRelevance()
+	{
+		Constraint c;
+		
+		HashMap<ConstraintName, Constraint> hm = this.qcs.getConstraints();
+		for(Map.Entry<ConstraintName, Constraint> entry : hm.entrySet())
+		{
+			c = entry.getValue();
+			System.out.println("\n For " + c.getName() + " of " + this.Name + ", the value of the relevance is: " + c.getRelevance());
+		}
+	}
+	public void calculateRelevanceDetailed()
+	{
+		Constraint c;
+		ArrayList<Object> ret;
+
+		HashMap<ConstraintName, Constraint> hm = this.qcs.getConstraints();
+		for(Map.Entry<ConstraintName, Constraint> entry : hm.entrySet())
+		{
+			System.out.println("\n\n Starting Task of Relevance calculation for " + entry.getKey());
+			c = ((Constraint)entry.getValue());
+			System.out.println("\n For " + c.getName() + " of " + this.Name + ", the value of the relevance is: " + c.getRelevanceDetailed());
 		}
 	}
 }

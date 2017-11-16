@@ -3,23 +3,22 @@ package exampleWorkingAgents;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Observable;
 
 import MVC.Commande;
-import MVC.Message;
 import constraints.Constraint;
 import constraints.Term;
 import model.Action;
 import model.Engine;
 import parameters.Parameter;
 import relevance.Argument;
+import relevance.Assumption;
 
 public class WorkingAgent extends Engine 
 {
 	public WorkingAgent(String arg0) 
 	{
 		super(arg0);
-		this.InitParameters();
+		this.InitInternalParameters();
 		this.InitConstraints();
 		this.buildConstraints();	
 	}
@@ -27,7 +26,7 @@ public class WorkingAgent extends Engine
 	{
 		super(arg0);
 		this.addParameter(arg1);
-		this.InitParameters();
+		this.InitInternalParameters();
 		this.InitConstraints();
 	}
 	public WorkingAgent(String arg0, ArrayList <Parameter<?>> arg1) 
@@ -35,11 +34,11 @@ public class WorkingAgent extends Engine
 		super(arg0);	
 		for(Parameter<?> p : arg1)
 			this.addParameter(p);
-		this.InitParameters();
+		this.InitInternalParameters();
 		this.InitConstraints();
 	}
 	
-	private void InitParameters()
+	private void InitInternalParameters()
 	{
 		this.addParameter(new Parameter<Integer>(ParameterName.WorkNeeds, 35, "hours"));
 		this.addParameter(new Parameter<Integer>(ParameterName.HoursWorkedWeek, 0, "hours"));
@@ -62,12 +61,21 @@ public class WorkingAgent extends Engine
 				return (int)param.get(ParameterName.HoursWorkedWeek).getValue() <= (int)param.get(ParameterName.NormalWorkingTime).getValue();
 			}
 		};
-		Term assumption = new Term()
+		Term rule2 = new Term("HoursWorkedWeek == TimeNeeds") 
+		{
+			@Override public boolean expression() 
+			{ 
+				return (int)param.get(ParameterName.HoursWorkedWeek).getValue() == (int)param.get(ParameterName.WorkNeeds).getValue();
+			}
+		};
+		
+		
+		Assumption assumption = new Assumption(ParameterName.NormalWorkingTime, ParameterName.WorkNeeds)
 		{
 			//Assumption saying that the normal working hours are enough for the work.
 			@Override public boolean expression() 
 			{ 
-				return (int)param.get(ParameterName.NormalWorkingTime).getValue() <= (int)param.get(ParameterName.WorkNeeds).getValue() ;
+				return (int)param.get(ParameterName.NormalWorkingTime).getValue() >= (int)param.get(ParameterName.WorkNeeds).getValue() ;
 			}
 		};
 		ArrayList<Argument> argList = new ArrayList<>();
@@ -83,7 +91,7 @@ public class WorkingAgent extends Engine
 		});
 		
 		//Argument NothingElseToDo
-		assumption = new Term()
+		assumption = new Assumption(ParameterName.NothingElseToDo)
 		{
 			//Assumption saying that the normal working hours are enough for the work.
 			@Override public boolean expression() 
@@ -91,7 +99,7 @@ public class WorkingAgent extends Engine
 				return !(boolean)param.get(ParameterName.NothingElseToDo).getValue() ;
 			}
 		};
-		argList.add(new Argument(ArgumentName.NothingElseToDo, assumption, rule ) 
+		argList.add(new Argument(ArgumentName.NothingElseToDo, assumption, rule, rule2 ) 
 		{
 			@Override
 			public int calculateRelevanceImpact()
@@ -102,14 +110,14 @@ public class WorkingAgent extends Engine
 		
 		//Argument Tired
 		//First Version
-		assumption = new Term()
+		assumption = new Assumption(ParameterName.RestNeeds)
 		{
 			@Override public boolean expression() 
 			{ 
 				return (int)param.get(ParameterName.RestNeeds).getValue() >= 30 ;
 			}
 		};
-		argList.add(new Argument(ArgumentName.Tired, assumption, rule, 1 ) 
+		argList.add(new Argument(ArgumentName.Tired, 1, assumption, rule ) 
 		{
 			@Override
 			public int calculateRelevanceImpact()
@@ -118,14 +126,14 @@ public class WorkingAgent extends Engine
 			}
 		});		
 		//Second Version
-		assumption = new Term()
+		assumption = new Assumption(ParameterName.RestNeeds)
 		{
 			@Override public boolean expression() 
 			{ 
 				return (int)param.get(ParameterName.RestNeeds).getValue() >= 20 && (int)param.get(ParameterName.RestNeeds).getValue() < 30;
 			}
 		};
-		argList.add(new Argument(ArgumentName.Tired, assumption, rule, 2 ) 
+		argList.add(new Argument(ArgumentName.Tired, 2, assumption, rule ) 
 		{
 			@Override
 			public int calculateRelevanceImpact()
@@ -134,14 +142,14 @@ public class WorkingAgent extends Engine
 			}
 		});
 		//Third Version
-		assumption = new Term()
+		assumption = new Assumption(ParameterName.RestNeeds)
 		{
 			@Override public boolean expression() 
 			{ 
 				return (int)param.get(ParameterName.RestNeeds).getValue() >= 10 && (int)param.get(ParameterName.RestNeeds).getValue() < 20;
 			}
 		};
-		argList.add(new Argument(ArgumentName.Tired, assumption, rule, 3 ) 
+		argList.add(new Argument(ArgumentName.Tired, 3, assumption, rule, rule2 ) 
 		{
 			@Override
 			public int calculateRelevanceImpact()
@@ -150,14 +158,14 @@ public class WorkingAgent extends Engine
 			}
 		});
 		//Fourth Version
-				assumption = new Term()
+				assumption = new Assumption(ParameterName.RestNeeds)
 				{
 					@Override public boolean expression() 
 					{ 
 						return (int)param.get(ParameterName.RestNeeds).getValue() >= 0 && (int)param.get(ParameterName.RestNeeds).getValue() < 10;
 					}
 				};
-				argList.add(new Argument(ArgumentName.Tired, assumption, rule, 4 ) 
+				argList.add(new Argument(ArgumentName.Tired, 4, assumption, rule, rule2 ) 
 				{
 					@Override
 					public int calculateRelevanceImpact()
@@ -166,9 +174,25 @@ public class WorkingAgent extends Engine
 					}
 				});
 				
-		
+		//Urgence Argument
+		assumption = new Assumption(ParameterName.UrgentToFinish)
+		{
+			@Override public boolean expression() 
+			{ 
+				return (boolean)param.get(ParameterName.UrgentToFinish).getValue();
+			}
+		};
+		argList.add(new Argument(ArgumentName.Urgent, assumption, rule2 ) 
+		{
+			@Override
+			public int calculateRelevanceImpact()
+			{
+				return this.MappedRelevance(100);
+			}
+		});
+				
 		//No Absents Argument
-		assumption = new Term()
+		assumption = new Assumption(ParameterName.NumberOfWorkers, ParameterName.NormalNumberofWorkers)
 		{
 			@Override public boolean expression() 
 			{ 
@@ -235,31 +259,6 @@ public class WorkingAgent extends Engine
 		else if(c.donneType().matches("RELEVANCECALCULATIONDETAILED"))
 		{
 			this.calculateRelevanceDetailed();
-		}
-	}
-	
-	public void calculateRelevance()
-	{
-		Constraint c;
-		
-		HashMap<ConstraintName, Constraint> hm = this.qcs.getConstraints();
-		for(Map.Entry<ConstraintName, Constraint> entry : hm.entrySet())
-		{
-			c = entry.getValue();
-			System.out.println("\n For " + c.getName() + " of " + this.Name + ", the value of the relevance is: " + c.getRelevance());
-		}
-	}
-	public void calculateRelevanceDetailed()
-	{
-		Constraint c;
-		ArrayList<Object> ret;
-
-		HashMap<ConstraintName, Constraint> hm = this.qcs.getConstraints();
-		for(Map.Entry<ConstraintName, Constraint> entry : hm.entrySet())
-		{
-			System.out.println("\n\n Starting Task of Relevance calculation for " + entry.getKey());
-			c = ((Constraint)entry.getValue());
-			System.out.println("\n For " + c.getName() + " of " + this.Name + ", the value of the relevance is: " + c.getRelevanceDetailed());
 		}
 	}
 	public void apply(Action arg0)

@@ -4,5 +4,6 @@ public enum ArgumentName {
 	enoughToFinish,
 	NothingElseToDo,
 	Tired,
-	Absents;
+	Absents,
+	Urgent;
 }

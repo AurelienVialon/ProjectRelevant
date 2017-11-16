@@ -3,27 +3,23 @@ package relevance;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeSet;
 
-import MVC.ModeleThreaded;
 import constraints.Term;
-import exampleWorkingAgents.ArgumentName;
+import exampleWorkingAgents.ParameterName;
 
 public class Relevance
 {
-	private HashMap<Term, SetOfArguments> library = new HashMap<Term, SetOfArguments>();//Library built with the various version of the constraint.
+	private HashMap<Term, SetOfArguments> library = new HashMap<Term, SetOfArguments>();//Library built with the various versions of the constraint.
 	
-	private int totalRelevanceImpact = 0;
 	private int value = 0;
 	
 	private SetOfArguments CurrentArguments = null;
+	private TreeSet<ParameterName> Triggers = new TreeSet<ParameterName>();
 
 	public int getValueRelevance()
 	{
 		return this.value;
-	}
-	public int getValueRelevanceImpact()
-	{
-		return this.totalRelevanceImpact;
 	}
 	
 	public Term maximise()
@@ -34,7 +30,7 @@ public class Relevance
 		
 		for(Map.Entry<Term, SetOfArguments> entry : this.library.entrySet())
 		{
-			current = entry.getValue().maximise();
+			current = entry.getValue().maximise() / entry.getValue().size();
 			
 			if(current > best || flag)
 			{
@@ -44,8 +40,7 @@ public class Relevance
 				akeep = entry.getKey();
 			}
 		}
-		this.totalRelevanceImpact = best;
-		this.value = this.totalRelevanceImpact / this.CurrentArguments.size();
+		this.value = best;
 		return akeep;
 	}
 	public Term maximiseDetailed()
@@ -56,7 +51,10 @@ public class Relevance
 		
 		for(Map.Entry<Term, SetOfArguments> entry : this.library.entrySet())
 		{
-			current = entry.getValue().maximiseDetailed();
+			System.out.println("\n Exploration of rule definition " + entry.getKey().getName());
+			current = entry.getValue().maximiseDetailed() / entry.getValue().size();
+			
+			System.out.println("\n\t\t Expected Relevance for this rule definition : " + current);
 			
 			if(current > best || flag)
 			{
@@ -66,13 +64,14 @@ public class Relevance
 				akeep = entry.getKey();
 			}
 		}
-		this.totalRelevanceImpact = best;
-		this.value = this.totalRelevanceImpact / this.CurrentArguments.size();
+		this.value = best;
+		System.out.println("\n\t\t Rule definition chose: " + akeep.getName());
 		return akeep;
 	}
 	
 	public void addArgument(Argument arg0)
 	{
+		this.Triggers.addAll(arg0.getAssumptionParametersNames());
 		for(Term t : arg0.getSupportedRules())
 		{
 			if(this.library.containsKey(t))
@@ -84,5 +83,18 @@ public class Relevance
 				this.library.put(t, new SetOfArguments(arg0));
 			}
 		}
+	}
+	public TreeSet<ParameterName> getTriggers()
+	{
+		return this.Triggers;
+	}
+	public ArrayList<Term> getRules()
+	{
+		ArrayList<Term> ret = new ArrayList<Term>();
+		for(Map.Entry<Term, SetOfArguments> entry : this.library.entrySet())
+		{
+			ret.add(entry.getKey());
+		}
+		return ret;
 	}
 }
