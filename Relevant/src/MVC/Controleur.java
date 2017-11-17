@@ -133,10 +133,7 @@ public abstract class Controleur implements ActionListener
     
     public void Init_Ecoutes(Vue arg0)
     {
-    	for(AbstractButton ct : arg0.get_aEcouter())
-    	{
-    		ct.addActionListener(this);
-    	}
+    
     }
     
     public void Lancement ()

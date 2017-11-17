@@ -5,15 +5,14 @@
 package MVC;
 
 
-import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
-import javax.swing.AbstractButton;
-import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
+
+import javafx.application.Application;
+import javafx.scene.Node;
+import javafx.stage.Stage;
 
 /**
  *
@@ -23,11 +22,9 @@ import javax.swing.JFrame;
  * Elle représentera ce que l'utilisateur verra et aura besoin du modèle pour fonctionner.
  */
 
-public abstract class Vue implements Observer
+public abstract class Vue extends Application implements Observer
 {
     protected Controleur c;
-    protected Component cp;
-    protected ArrayList<AbstractButton> aEcouter = new ArrayList<AbstractButton>();
     
     protected String name = "";
     
@@ -46,40 +43,8 @@ public abstract class Vue implements Observer
     @Override
     public abstract void update(Observable o, Object ob); 
     
-  	/**
-	 * @return the cp
-	 */
-	public Component getCp() 
-	{
-		return cp;
-	}
-	
-	public ArrayList<AbstractButton> get_aEcouter()
-	{
-		return this.aEcouter;
-	}
-	
-	/**
-	 * @param cp the cp to set
-	 */
-	public void setCp(JComponent cp) {
-		this.cp = cp;
-	}
 	
 	public String getName(){
 		return this.name;
-	}
-	
-	
-	public void setVisibleGraphic(boolean b)
-	{
-		this.cp.setVisible(b);
-	}
-	public void disposeGraphic()
-	{
-		if(this.cp instanceof JFrame)
-			((JFrame)this.cp).dispose();
-		else
-			this.cp = null;
 	}
 }
