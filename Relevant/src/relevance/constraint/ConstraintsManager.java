@@ -1,4 +1,4 @@
-package constraints;
+package relevance.constraint;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,6 +7,7 @@ import java.util.Map;
 
 import exampleWorkingAgents.ConstraintName;
 import exampleWorkingAgents.ParameterName;
+import model.Engine;
 import relevance.Argument;
 
 public class ConstraintsManager 
@@ -26,16 +27,16 @@ public class ConstraintsManager
 	{
 		return this.library.put(arg0.getName(),arg0);
 	}
-	public Constraint add(ConstraintName arg0, Argument arg1)
+	public Constraint add(ConstraintName arg0, Argument arg1, Engine e)
 	{
 		return this.library.put(arg0,new Constraint(arg0, arg1));
 	}
-	public Constraint add(ConstraintName arg0, ArrayList<Argument> arg1)
+	public Constraint add(ConstraintName arg0, ArrayList<Argument> arg1, Engine e)
 	{
 		return this.library.put(arg0,new Constraint(arg0, arg1));
 	}
 	
-	public void build()
+	public void build(Engine e)
 	{
 		for (Map.Entry<ConstraintName, Constraint> c : this.library.entrySet()) 
 		{
@@ -72,11 +73,11 @@ public class ConstraintsManager
 			entry.getValue().reassess();
 		}
 	}
-	public void reassessDetailed ()
+	public void reassessDetailed (Engine e)
 	{
 		for (Map.Entry<ConstraintName, Constraint> entry : this.library.entrySet()) 
 		{
-			entry.getValue().reassessDetailed();
+			entry.getValue().reassessDetailed(e);
 		}
 	}
 	public void reassess (ParameterName arg0)
@@ -87,12 +88,12 @@ public class ConstraintsManager
 				entry.getValue().reassess();
 		}
 	}
-	public void reassessDetailed (ParameterName arg0)
+	public void reassessDetailed (ParameterName arg0, Engine e)
 	{
 		for (Map.Entry<ConstraintName, Constraint> entry : this.library.entrySet()) 
 		{
 			if(entry.getValue().sensibleTo().contains(arg0))
-				entry.getValue().reassessDetailed();
+				entry.getValue().reassessDetailed(e);
 		}
 	}
 }

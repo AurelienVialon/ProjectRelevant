@@ -2,8 +2,8 @@ package relevance;
 
 import java.util.TreeSet;
 
-import constraints.Term;
 import exampleWorkingAgents.ParameterName;
+import relevance.constraint.Term;
 
 public class Assumption extends Term
 {

@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import exampleWorkingAgents.ArgumentName;
+import model.Engine;
 
 public class SetOfArguments
 {
@@ -37,15 +38,15 @@ public class SetOfArguments
 		
 		return result;
 	}
-	public int maximiseDetailed()
+	public int maximiseDetailed(Engine e)
 	{
 		int result = 0;
 		String s1 = "";
 		
 		for(Map.Entry<ArgumentName, ArgumentVersions> entry : this.memory.entrySet())
 		{
-			System.out.println("\n\t Starting task of the maximisation of the set of argument's versions " + entry.getKey());
-			result += entry.getValue().maximiseDetailed();
+			e.notifie("\n\t Starting task of the maximisation of the set of argument's versions " + entry.getKey());
+			result += entry.getValue().maximiseDetailed(e);
 		}
 		return result;
 	}

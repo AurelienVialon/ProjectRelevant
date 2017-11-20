@@ -1,17 +1,16 @@
 /**
  * 
  */
-package constraints;
+package relevance.constraint;
 
 import java.util.ArrayList;
-import java.util.Map;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Set;
 import java.util.TreeSet;
 
+import MVC.Message;
+import MVC.SujetMessage;
 import exampleWorkingAgents.ConstraintName;
 import exampleWorkingAgents.ParameterName;
+import model.Engine;
 import relevance.Argument;
 import relevance.Relevance;
 
@@ -29,6 +28,7 @@ public class Constraint
 	
 	private int Relaxed = 0;
 	private int SuccessRate = 0;
+	private int MinimumSuccessRate = 100;
 
 	/**
 	 * 
@@ -83,18 +83,18 @@ public class Constraint
 	{
 		this.expression = this.RelevanceMaximise();
 	}
-	public void reassessDetailed()
+	public void reassessDetailed(Engine e)
 	{
-		System.out.println("\n\t Starting of reassessment of " + this.getName() + " constraint.");
+		e.notifie("\n\t Starting of reassessment of " + this.getName() + " constraint.");
 		
-		Term t = this.RelevanceMaximiseDetailed();
+		Term t = this.RelevanceMaximiseDetailed(e);
 		if(t!= this.expression)
 		{
-			System.out.println(" Changement of the definition of Constraint " + this.getName() + " from " + this.expression.getName() + " to " + t.getName());
+			e.notifie(new Message(SujetMessage.ConstraintChange, "\n Changement of the definition of Constraint " + this.getName() + " from " + this.expression.getName() + " to " + t.getName()));
 		}	
 		else
 		{
-			System.out.println("No change into the constraint definition");
+			e.notifie("\n No change into the constraint definition");
 		}
 		this.expression = t;
 	}
@@ -103,9 +103,9 @@ public class Constraint
 	{
 		return this.relevance.maximise();
 	}
-	private Term RelevanceMaximiseDetailed()
+	private Term RelevanceMaximiseDetailed(Engine e)
 	{
-		return this.relevance.maximiseDetailed();
+		return this.relevance.maximiseDetailed(e);
 	}
 	
 	public ConstraintName getName()
@@ -123,16 +123,28 @@ public class Constraint
 	}
 	public int getRelevance()
 	{
-		this.reassess();
 		return this.relevance.getValueRelevance();
 	}
-	public int getRelevanceDetailed()
+	public int getRelevanceDetailed(Engine e)
 	{
-		this.reassessDetailed();
+		this.reassessDetailed(e);
 		return this.relevance.getValueRelevance();
 	}
 	public TreeSet<ParameterName> sensibleTo()
 	{
 		return this.relevance.getTriggers();
+	}
+	public boolean relax()
+	{
+		boolean ret = false;
+		
+		if(this.SuccessRate > this.MinimumSuccessRate && 
+				this.MinimumSuccessRate > this.getRelevance())
+		{
+			this.MinimumSuccessRate = this.getRelevance();
+			ret = true;
+		}
+		
+		return ret;
 	}
 }

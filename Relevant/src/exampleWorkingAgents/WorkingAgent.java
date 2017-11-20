@@ -5,33 +5,33 @@ import java.util.HashMap;
 import java.util.Map;
 
 import MVC.Commande;
-import constraints.Constraint;
-import constraints.Term;
 import model.Action;
 import model.Engine;
 import parameters.Parameter;
 import relevance.Argument;
 import relevance.Assumption;
+import relevance.constraint.Constraint;
+import relevance.constraint.Term;
 
 public class WorkingAgent extends Engine 
 {
 	public WorkingAgent(String arg0) 
 	{
-		super(arg0);
+		super(arg0, false, 1000);
 		this.InitInternalParameters();
 		this.InitConstraints();
 		this.buildConstraints();	
 	}
 	public WorkingAgent(String arg0, Parameter<?> arg1) 
 	{
-		super(arg0);
+		super(arg0,false, 1000);
 		this.addParameter(arg1);
 		this.InitInternalParameters();
 		this.InitConstraints();
 	}
 	public WorkingAgent(String arg0, ArrayList <Parameter<?>> arg1) 
 	{
-		super(arg0);	
+		super(arg0, false, 1000);	
 		for(Parameter<?> p : arg1)
 			this.addParameter(p);
 		this.InitInternalParameters();
@@ -208,6 +208,23 @@ public class WorkingAgent extends Engine
 			}
 		});
 		
+		//Not Too Much Hours Argument
+		assumption = new Assumption(ParameterName.WorkNeeds)
+		{
+			@Override public boolean expression() 
+			{ 
+				return (int)param.get(ParameterName.WorkNeeds).getValue() < 50;
+			}
+		};
+		argList.add(new Argument(ArgumentName.NotTooMuchWorkNeed, assumption, rule, rule2 ) 
+		{
+			@Override
+			public int calculateRelevanceImpact()
+			{
+				return this.MappedRelevance(100);
+			}
+	});
+		
 		//The Constraint is created.
 		this.qcs.add(this.MakeConstraint(ConstraintName.EnoughForWork, argList));
 	}
@@ -269,5 +286,20 @@ public class WorkingAgent extends Engine
 	{
 		this.param.addParameter(arg0);
 		arg0.addObserver(this);
+	}
+	@Override
+	protected void processus() 
+	{
+		if(this.checkQCs())
+		{
+			for(Constraint cons : this.violated_qcs)
+	     	{
+	     		System.out.println(cons.getName() + " is violated !");
+	     	}
+		}
+		else
+		{
+			System.out.println(" There is no violated constraints.");
+		}
 	}
 }

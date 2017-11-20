@@ -22,15 +22,20 @@ public abstract class Modele extends Observable implements Runnable, Observer
     protected boolean continuer;   // pour quitter le thread
     protected boolean en_pause;   // pour pauser / depauser
     
+    protected boolean pause = true;
+    protected long cycle_sleep = 0;
+    
     protected String Name = "";
     protected Stack<Message> bol = new Stack<Message>();
     
 	protected String flagMaj;
     
-	public Modele(String arg0)
+	public Modele(String arg0, boolean arg1, long arg2)
 	{
 		super();
 		this.Name = arg0;
+		this.pause = arg1;
+		this.cycle_sleep = arg2;
 	}
 	
     public void pause ()
@@ -62,6 +67,7 @@ public abstract class Modele extends Observable implements Runnable, Observer
         	{
         		synchronized(this.bol)
         		{
+        			this.processus();
         			if (this.bol.size() > 0)
         			{
                     	this.executerCommande((Commande)this.ouvrirBol());
@@ -73,7 +79,19 @@ public abstract class Modele extends Observable implements Runnable, Observer
         			}
         		}
         	}
-        	this.pause();
+        	if(this.pause)
+        		this.pause();
+        	if(this.cycle_sleep > 0)
+        	{
+        		try 
+        		{
+					Thread.sleep(this.cycle_sleep);
+				} 
+        		catch (InterruptedException e) 
+        		{
+					e.printStackTrace();
+				}
+        	}
         }
 	}
     
@@ -87,7 +105,7 @@ public abstract class Modele extends Observable implements Runnable, Observer
     }
         
     //Méthode de notification de messages aux observateurs.
-    protected void notifie(Object o)
+    public void notifie(Object o)
     {
             this.setChanged();
             if ( this.countObservers() > 0)
@@ -131,6 +149,8 @@ public abstract class Modele extends Observable implements Runnable, Observer
     
     protected abstract <T> void executerCommande(Commande<T> c);
     
+    protected abstract void processus();
+    
     public void deposerMessage(Message m){ synchronized(this.bol){this.bol.push(m);} }
     
 	protected Message ouvrirBol() 
@@ -143,5 +163,9 @@ public abstract class Modele extends Observable implements Runnable, Observer
 		}	
 				
 		return m;
+	}
+	public String getName()
+	{
+		return this.Name;
 	}
 }

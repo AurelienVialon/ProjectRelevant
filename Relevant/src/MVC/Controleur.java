@@ -13,8 +13,8 @@ import java.util.Map;
 
 import javax.swing.AbstractButton;
 
-import constraints.Constraint;
 import exampleWorkingAgents.WorkingAgent;
+import relevance.constraint.Constraint;
 
 /**
  *
@@ -61,6 +61,12 @@ public abstract class Controleur implements ActionListener
      public void ajtModele(Modele m)
      {
     	 this.modeles.put(m.Name, new ModeleThreaded(m));
+     }
+     public void ajtModele(Modele m, Vue v)
+     {
+    	 this.modeles.put(m.Name, new ModeleThreaded(m));
+    	 this.addVue(v);
+    	 this.Lien_Vue_Modele(v, m.Name);
      }
     //Méthode d'obtention.
     public Modele donne_modele(String arg0)
@@ -120,7 +126,9 @@ public abstract class Controleur implements ActionListener
     //Connect the Specified Vue.
     public void Lien_Vue_Modele ( Vue arg0, String arg1)
     {
-        this.modeles.get(arg1).getModele().ajouter_lien(arg0);
+    	Modele m =   this.modeles.get(arg1).getModele();
+    	m.ajouter_lien(arg0);
+        arg0.createNewView(m);
     }
     //Connect the Specified Vue.
     public void Lien_Vue_Modele ( ArrayList<Vue> arg0, String arg1 )

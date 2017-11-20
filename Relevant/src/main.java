@@ -1,27 +1,28 @@
 
 import MVC.Commande;
 import MVC.Message;
-import constraints.Term;
+import exampleWorkingAgents.Interface;
 import exampleWorkingAgents.ParameterName;
 import exampleWorkingAgents.WorkingAgentsExample;
 import javafx.scene.paint.Color;
 import model.Engine;
 import parameters.Parameter;
 import relevance.Argument;
+import relevance.constraint.Term;
 
 public class main {
 
 	public static void main(String[] args) throws InterruptedException 
 	{
+		Interface principal = new Interface();
 		System.out.println("Start of the WorkingAgentsExample Scenario");
-		WorkingAgentsExample ex = new WorkingAgentsExample();
+		WorkingAgentsExample ex = new WorkingAgentsExample(principal);
 		
 		//Commande<?> m = new Commande<>("QC_CHECK");
 		//Commande<?> m2 = new Commande<>("RELEVANCECALCULATIONDETAILED");
 		//Commande<?> m2 = new Commande<>("RELEVANCECALCULATION");
 		//Commande<?> m2 = new Commande<>("DISPLAY_PARAMETERS_VALUES");
 		//ex.envoyer(m);
-		ex.Lancement();
 		Thread.sleep(100);
 		
 		System.out.println("\n Scenario : Modification of the Parameter Worked Hours for Agent1 to 36 hours.");
@@ -44,5 +45,19 @@ public class main {
 		System.out.println("\n Scenario : Modification of the Parameter WorkNeed to 40.");
 		ex.getAgent("Agent1").modifParameter(ParameterName.WorkNeeds,40);//ex.modifParameter(ParameterName.WorkNeeds, 40);
 		Thread.sleep(100);
+		
+		
+		System.out.println("\n Scenario : Modification of the Parameter WorkNeed to from 40 to 50.");
+		int i = 0;
+		
+		while((int)ex.getAgent("Agent1").getParameter(ParameterName.WorkNeeds).getValue() < 50)
+		{
+			i = (int)ex.getAgent("Agent1").getParameter(ParameterName.WorkNeeds).getValue() + 1;
+			
+			System.out.println("\n Scenario : Modification of the Parameter WorkNeed to " + i );
+			
+			ex.getAgent("Agent1").modifParameter(ParameterName.WorkNeeds, i);
+			Thread.sleep(2000);
+		}
 	}
 }

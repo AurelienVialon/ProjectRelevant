@@ -5,14 +5,10 @@
 package MVC;
 
 
-import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
-
-import javafx.application.Application;
-import javafx.scene.Node;
-import javafx.stage.Stage;
+import javax.swing.JFrame;
 
 /**
  *
@@ -22,7 +18,7 @@ import javafx.stage.Stage;
  * Elle représentera ce que l'utilisateur verra et aura besoin du modèle pour fonctionner.
  */
 
-public abstract class Vue extends Application implements Observer
+public abstract class Vue extends JFrame implements Observer
 {
     protected Controleur c;
     
@@ -43,7 +39,8 @@ public abstract class Vue extends Application implements Observer
     @Override
     public abstract void update(Observable o, Object ob); 
     
-	
+    public abstract void createNewView(Modele arg0);
+    
 	public String getName(){
 		return this.name;
 	}

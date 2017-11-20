@@ -8,14 +8,16 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Observable;
 
+import MVC.Message;
 import MVC.Modele;
-import constraints.Constraint;
-import constraints.ConstraintsManager;
+import MVC.SujetMessage;
 import exampleWorkingAgents.ConstraintName;
 import exampleWorkingAgents.ParameterName;
 import parameters.Parameter;
 import parameters.Parameters;
 import relevance.Argument;
+import relevance.constraint.Constraint;
+import relevance.constraint.ConstraintsManager;
 
 /**
  * @author Aurélien Vialon
@@ -33,9 +35,9 @@ public abstract class Engine extends Modele
 	 * 
 	 */
 
-	public Engine(String arg0)
+	public Engine(String arg0, boolean arg1, long arg2)
 	{
-		super(arg0);
+		super(arg0, arg1, arg2);
 		this.qcs = new ConstraintsManager();
 	}
 	
@@ -82,7 +84,7 @@ public abstract class Engine extends Modele
 	
 	public void buildConstraints()
 	{
-	 	this.qcs.build();
+	 	this.qcs.build(this);
 
 	}
 	public Action decide()
@@ -94,9 +96,9 @@ public abstract class Engine extends Modele
 	{
 		this.qcs.reassess();
 	}
-	public void reassessDetailed()
+	public void reassessDetailed(Engine e)
 	{
-		this.qcs.reassessDetailed();
+		this.qcs.reassessDetailed(this);
 	}
 	
 	public void reassess(ParameterName arg0)
@@ -105,7 +107,7 @@ public abstract class Engine extends Modele
 	}
 	public void reassessDetailed(ParameterName arg0)
 	{
-		this.qcs.reassessDetailed(arg0);
+		this.qcs.reassessDetailed(arg0, this);
 	}
 	
 	@Override
@@ -114,9 +116,10 @@ public abstract class Engine extends Modele
 		if(arg0 instanceof Parameter<?>)
 		{
 			Parameter<?> p = (Parameter<?>)arg0;
-			  System.out.println("\n Modification of the Parameter " + p.getName() + " detected.");
-			  System.out.println(" Reassessment of the related requirements :");
-			  this.reassessDetailed();
+			
+			this.notifie(new Message(SujetMessage.ModifParameter, "\n\n Modification of the Parameter " + p.getName() + " detected. => " + p.getValue()));
+			this.notifie(new Message(SujetMessage.Reassessment,"\n Reassessment of the related requirements :"));
+			this.reassessDetailed(this);
 		}
 	}
 	
@@ -141,7 +144,7 @@ public abstract class Engine extends Modele
 		{
 			System.out.println("\n\n Starting Task of Relevance calculation for " + entry.getKey());
 			c = ((Constraint)entry.getValue());
-			System.out.println("\n For " + c.getName() + " of " + this.Name + ", the value of the relevance is: " + c.getRelevanceDetailed());
+			System.out.println("\n For " + c.getName() + " of " + this.Name + ", the value of the relevance is: " + c.getRelevanceDetailed(this));
 		}
 	}
 }

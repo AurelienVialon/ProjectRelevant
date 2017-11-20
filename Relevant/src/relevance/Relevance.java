@@ -5,8 +5,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeSet;
 
-import constraints.Term;
 import exampleWorkingAgents.ParameterName;
+import model.Engine;
+import relevance.constraint.Term;
 
 public class Relevance
 {
@@ -43,7 +44,7 @@ public class Relevance
 		this.value = best;
 		return akeep;
 	}
-	public Term maximiseDetailed()
+	public Term maximiseDetailed(Engine e)
 	{
 		int best = 0, current = 0;
 		Term akeep = null;
@@ -51,10 +52,10 @@ public class Relevance
 		
 		for(Map.Entry<Term, SetOfArguments> entry : this.library.entrySet())
 		{
-			System.out.println("\n Exploration of rule definition " + entry.getKey().getName());
-			current = entry.getValue().maximiseDetailed() / entry.getValue().size();
+			e.notifie("\n Exploration of rule definition " + entry.getKey().getName());
+			current = entry.getValue().maximiseDetailed(e) / entry.getValue().size();
 			
-			System.out.println("\n\t\t Expected Relevance for this rule definition : " + current);
+			e.notifie("\n\t\t Expected Relevance for this rule definition : " + current);
 			
 			if(current > best || flag)
 			{
@@ -65,7 +66,7 @@ public class Relevance
 			}
 		}
 		this.value = best;
-		System.out.println("\n\t\t Rule definition chose: " + akeep.getName());
+		e.notifie("\n\t\t Rule definition chose: " + akeep.getName());
 		return akeep;
 	}
 	

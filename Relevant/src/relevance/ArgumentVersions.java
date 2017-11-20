@@ -2,6 +2,10 @@ package relevance;
 
 import java.util.ArrayList;
 
+import MVC.Message;
+import MVC.SujetMessage;
+import model.Engine;
+
 public class ArgumentVersions 
 {
 	Argument active = null;
@@ -44,9 +48,9 @@ public class ArgumentVersions
     	}
 		return best;
 	}
-	public int maximiseDetailed()
+	public int maximiseDetailed(Engine e)
 	{
-        String s = "", relevanceImpacts = "Relevance Impacts :";
+        String relevanceImpacts = "Relevance Impacts :";
         int max = 0, best = 0;
 		boolean flag;
         
@@ -72,22 +76,21 @@ public class ArgumentVersions
 			{
 				if(this.active == null)
 				{
-					s+= "\n\t\t Set of a new active argument : " + akeep.getName();
+					e.notifie("\n\t\t Set of a new active argument : " + akeep.getName());
 				}
 				else
 				{
-					s+= "\n\t\t After the maximisation of the set of Arguments it appears that " + this.active.getName() +" Version" + this.active.getVersion() + " should be changed to Version" + akeep.getVersion();
+					e.notifie(new Message(SujetMessage.ArgumentChange, "\n\t\t After the maximisation of the set of Arguments it appears that " + this.active.getName() +" Version" + this.active.getVersion() + " should be changed to Version" + akeep.getVersion()));
 				}
 				
 				this.active = akeep;
 			}
 			else
 			{
-				s+="\n\t\t System decided to keep " + this.active.getName() + " Version" + this.active.getVersion();
+				e.notifie("\n\t\t System decided to keep " + this.active.getName() + " Version" + this.active.getVersion());
 			}
 		}
-		System.out.println(s);
-		System.out.println("because : " + relevanceImpacts);
+		e.notifie("\n because : " + relevanceImpacts);
 		return best;
 	}
 }

@@ -1,4 +1,4 @@
-package constraints;
+package relevance.constraint;
 
 import parameters.Parameter;
 

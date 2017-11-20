@@ -5,20 +5,27 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JTextArea;
+
 import MVC.Commande;
 import MVC.Controleur;
 import MVC.Message;
+import MVC.Vue;
 import parameters.Parameter;
 import parameters.Parameters;
 
 public class WorkingAgentsExample extends Controleur
 {
+	Interface principal;
 	Parameters parameters = new Parameters();
 	
-	public WorkingAgentsExample() 
+	public WorkingAgentsExample(Interface principal) 
 	{
+		super();
+		this.principal = principal;
+		
 		this.Init();
-	}
+	}	
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -42,6 +49,11 @@ public class WorkingAgentsExample extends Controleur
 		
 		this.parameters.addParameter(new Parameter<Integer>(ParameterName.WorkNeeds, 35, "hours"));
 		this.parameters.addParameter(new Parameter<Boolean>(ParameterName.UrgentToFinish, false));
+		
+		for(Map.Entry<ParameterName, Parameter<?>> entry : this.parameters.get().entrySet())
+		{
+			this.principal.addParameterInput(entry.getValue());
+		}
 	}
 	public void InitAgents()
 	{
@@ -53,13 +65,19 @@ public class WorkingAgentsExample extends Controleur
 		parametersList.add(this.parameters.get(ParameterName.NormalWorkingTime));
 		parametersList.add(this.parameters.get(ParameterName.UrgentToFinish));
 		
-		this.ajtModele(new WorkingAgent("Agent1", parametersList));
+		this.ajtModele(new WorkingAgent("Agent1", parametersList),
+				this.principal);	
 		//this.ajtModele(new WorkingAgent("Agent2", parametersList));
 		//this.ajtModele(new WorkingAgent("Agent3", parametersList));
+		this.Lancement();
 	}
 	public WorkingAgent getAgent(String arg0)
 	{
 		return (WorkingAgent)this.donne_modele(arg0);
+	}
+	public synchronized Parameter<?> getParameter(ParameterName arg0)
+	{
+		return this.parameters.get(arg0);
 	}
 	public synchronized <T> void modifParameter(ParameterName arg0, T arg1)
 	{
