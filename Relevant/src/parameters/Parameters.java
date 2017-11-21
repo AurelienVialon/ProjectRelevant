@@ -8,6 +8,7 @@ import exampleWorkingAgents.ParameterName;
 public class Parameters 
 {
 	Map<ParameterName, Parameter<?>> parameters = new HashMap<>();
+	Parameters external;
 	
 	public Parameters() 
 	{
@@ -22,7 +23,17 @@ public class Parameters
 	
 	public Parameter<?> get(ParameterName arg0)
 	{
-		return this.parameters.get(arg0);
+		Parameter<?> ret = null;
+		if(this.parameters.containsKey(arg0))
+		{
+			ret = this.parameters.get(arg0);
+		}
+		else if(this.external != null &&
+				this.external.contains(arg0))
+		{
+			ret = this.external.get(arg0);
+		}
+		return ret;
 	}
 	public Map<ParameterName, Parameter<?>> get()
 	{
@@ -31,5 +42,9 @@ public class Parameters
 	public boolean contains(Object arg0)
 	{
 		return this.parameters.containsKey(arg0);
+	}
+	public void addExternalParameters(Parameters arg0)
+	{
+		this.external = arg0;
 	}
 }

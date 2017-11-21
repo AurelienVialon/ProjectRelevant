@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.swing.JComponent;
 import javax.swing.JTextArea;
 
 import MVC.Commande;
@@ -23,7 +24,7 @@ public class WorkingAgentsExample extends Controleur
 	{
 		super();
 		this.principal = principal;
-		
+		this.principal.setControleur(this);
 		this.Init();
 	}	
 
@@ -47,7 +48,7 @@ public class WorkingAgentsExample extends Controleur
 		this.parameters.addParameter(new Parameter<Integer>(ParameterName.NumberOfWorkers, 2, "agents"));	
 		this.parameters.addParameter(new Parameter<Integer>(ParameterName.NormalNumberofWorkers, 2, "agents"));
 		
-		this.parameters.addParameter(new Parameter<Integer>(ParameterName.WorkNeeds, 35, "hours"));
+		//this.parameters.addParameter(new Parameter<Integer>(ParameterName.WorkNeeds, 35, "hours"));
 		this.parameters.addParameter(new Parameter<Boolean>(ParameterName.UrgentToFinish, false));
 		
 		for(Map.Entry<ParameterName, Parameter<?>> entry : this.parameters.get().entrySet())
@@ -57,16 +58,21 @@ public class WorkingAgentsExample extends Controleur
 	}
 	public void InitAgents()
 	{
-		ArrayList<Parameter<?>> parametersList = new ArrayList<>();
+		/*ArrayList<Parameter<?>> parametersList = new ArrayList<>();
 		parametersList.add(this.parameters.get(ParameterName.NumberOfWorkers));
 		parametersList.add(this.parameters.get(ParameterName.NormalNumberofWorkers));
 		
-		parametersList.add(this.parameters.get(ParameterName.WorkNeeds));
+		//parametersList.add(this.parameters.get(ParameterName.WorkNeeds));
 		parametersList.add(this.parameters.get(ParameterName.NormalWorkingTime));
-		parametersList.add(this.parameters.get(ParameterName.UrgentToFinish));
+		parametersList.add(this.parameters.get(ParameterName.UrgentToFinish));*/
 		
-		this.ajtModele(new WorkingAgent("Agent1", parametersList),
-				this.principal);	
+		WorkingAgent wAgent = new WorkingAgent("Agent1", this.parameters);
+		this.ajtModele(wAgent,this.principal);	
+		
+		for(Map.Entry<ParameterName, Parameter<?>> entry : wAgent.getParameters().get().entrySet())
+		{
+			this.principal.addAgentInternalParameterImput(wAgent.getName(), entry.getValue());
+		}
 		//this.ajtModele(new WorkingAgent("Agent2", parametersList));
 		//this.ajtModele(new WorkingAgent("Agent3", parametersList));
 		this.Lancement();

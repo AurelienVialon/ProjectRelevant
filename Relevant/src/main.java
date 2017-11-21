@@ -18,6 +18,7 @@ public class main {
 		System.out.println("Start of the WorkingAgentsExample Scenario");
 		WorkingAgentsExample ex = new WorkingAgentsExample(principal);
 		
+		
 		//Commande<?> m = new Commande<>("QC_CHECK");
 		//Commande<?> m2 = new Commande<>("RELEVANCECALCULATIONDETAILED");
 		//Commande<?> m2 = new Commande<>("RELEVANCECALCULATION");
@@ -25,29 +26,29 @@ public class main {
 		//ex.envoyer(m);
 		Thread.sleep(100);
 		
-		System.out.println("\n Scenario : Modification of the Parameter Worked Hours for Agent1 to 36 hours.");
+		System.out.println("\n Scenario1 : Modification of the Parameter Worked Hours for Agent1 to 36 hours.");
 		ex.getAgent("Agent1").modifParameter(ParameterName.HoursWorkedWeek, 36);
 	
 		Thread.sleep(100);
 		
-		System.out.println("\n Scenario : Modification of the Parameter RestNeeds for Agent1 to 25.");
+		System.out.println("\n Scenario2 : Modification of the Parameter RestNeeds for Agent1 to 25.");
 		ex.getAgent("Agent1").modifParameter(ParameterName.RestNeeds, 25);
 		Thread.sleep(100);
 	
-		System.out.println("\n Scenario : Modification of the Parameter Urgent to True.");
+		System.out.println("\n Scenario3 : Modification of the Parameter Urgent to True.");
 		ex.modifParameter(ParameterName.UrgentToFinish, true);
-		Thread.sleep(100);
+		Thread.sleep(100); 
 		
-		System.out.println("\n Scenario : Modification of the Parameter RestNeeds for Agent1 to 0.");
+		System.out.println("\n Scenario4 : Modification of the Parameter RestNeeds for Agent1 to 0.");
 		ex.getAgent("Agent1").modifParameter(ParameterName.RestNeeds,0);
 		Thread.sleep(100);
 
-		System.out.println("\n Scenario : Modification of the Parameter WorkNeed to 40.");
+		System.out.println("\n Scenario5 : Modification of the Parameter WorkNeed to 40.");
 		ex.getAgent("Agent1").modifParameter(ParameterName.WorkNeeds,40);//ex.modifParameter(ParameterName.WorkNeeds, 40);
 		Thread.sleep(100);
 		
 		
-		System.out.println("\n Scenario : Modification of the Parameter WorkNeed to from 40 to 50.");
+		System.out.println("\n Scenario6 : Modification of the Parameter WorkNeed from 40 to 50.");
 		int i = 0;
 		
 		while((int)ex.getAgent("Agent1").getParameter(ParameterName.WorkNeeds).getValue() < 50)

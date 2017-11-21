@@ -8,6 +8,7 @@ import MVC.Commande;
 import model.Action;
 import model.Engine;
 import parameters.Parameter;
+import parameters.Parameters;
 import relevance.Argument;
 import relevance.Assumption;
 import relevance.constraint.Constraint;
@@ -22,18 +23,10 @@ public class WorkingAgent extends Engine
 		this.InitConstraints();
 		this.buildConstraints();	
 	}
-	public WorkingAgent(String arg0, Parameter<?> arg1) 
-	{
-		super(arg0,false, 1000);
-		this.addParameter(arg1);
-		this.InitInternalParameters();
-		this.InitConstraints();
-	}
-	public WorkingAgent(String arg0, ArrayList <Parameter<?>> arg1) 
+	public WorkingAgent(String arg0, Parameters arg1) 
 	{
 		super(arg0, false, 1000);	
-		for(Parameter<?> p : arg1)
-			this.addParameter(p);
+		this.addExternalParameters(arg1);
 		this.InitInternalParameters();
 		this.InitConstraints();
 	}
@@ -52,8 +45,103 @@ public class WorkingAgent extends Engine
 	}
 	private void InitConstraints()
 	{
+		this.InitConstraintNormalTime();
+	}
+	@Override
+	public void Reinit() {
+		// TODO Auto-generated method stub
+		
+	}
+	@Override
+	protected void Maj() 
+	{
+		// TODO Auto-generated method stub		
+	}
+	@Override
+	protected <T> void executerCommande(Commande<T> c) 
+	{
+
+		if(c.donneType().matches("QC_CHECK"))
+		{
+	     	this.checkQCs();
+	     	
+	     	if(this.violated_qcs.size() == 0)
+	     	{
+	     		System.out.println(" All quality constraints are satisfied");
+	     	}
+	     	else
+	     		{
+	     			for(Constraint cons : this.violated_qcs)
+	    	     	{
+	    	     		System.out.println(cons.getName() + " is violated !");
+	    	     	}
+	     		}
+		}
+		else if(c.donneType().matches("DISPLAY_PARAMETERS_VALUES"))
+		{
+	     	for (Map.Entry<ParameterName, Parameter<?>> entry : this.param.get().entrySet()) 
+	    		{
+	     			System.out.println("For " + this.Name +", value of  " + entry.getKey() + " is " + entry.getValue().getValue() +" " + entry.getValue().getUnit());
+	    		}
+		}
+		else if(c.donneType().matches("DECIDE"))
+		{
+	     	apply(this.decide());
+		}
+		else if(c.donneType().matches("RELEVANCECALCULATION"))
+		{
+			this.calculateRelevance();
+		}
+		else if(c.donneType().matches("RELEVANCECALCULATIONDETAILED"))
+		{
+			this.calculateRelevanceDetailed();
+		}
+	}
+	public void apply(Action arg0)
+	{
+		
+	}
+	private void addParameter(Parameter<?> arg0)
+	{
+		this.param.addParameter(arg0);
+		arg0.addObserver(this);
+	}
+	@Override
+	protected void processus() 
+	{
+		if(this.checkQCs())
+		{
+			for(Constraint cons : this.violated_qcs)
+	     	{
+	     		System.out.println(cons.getName() + " is violated !");
+	     	}
+		}
+		else
+		{
+			System.out.println(" There is no violated constraints.");
+		}
+	}
+	private void InitConstraintRest()
+	{
+		Term best = new Term("RestNeed < 85") 
+		{
+			@Override public boolean expression() 
+			{ 
+				return (int)param.get(ParameterName.RestNeeds).getValue() <= 85;
+			}
+		};
+		Term bad = new Term("HoursWorkedWeek < NormalWorkingTime") 
+		{
+			@Override public boolean expression() 
+			{ 
+				return (int)param.get(ParameterName.HoursWorkedWeek).getValue() <= (int)param.get(ParameterName.NormalWorkingTime).getValue();
+			}
+		};
+	}
+	private void InitConstraintNormalTime()
+	{
 		//Initialisation of Constraint NormalTime
-	
+		
 		Term rule = new Term("HoursWorkedWeek < NormalWorkingTime") 
 		{
 			@Override public boolean expression() 
@@ -228,78 +316,15 @@ public class WorkingAgent extends Engine
 		//The Constraint is created.
 		this.qcs.add(this.MakeConstraint(ConstraintName.EnoughForWork, argList));
 	}
-	@Override
-	public void Reinit() {
-		// TODO Auto-generated method stub
+	
+	public void addExternalParameters(Parameters arg0)
+	{
+		this.param.addExternalParameters(arg0);
 		
-	}
-	@Override
-	protected void Maj() 
-	{
-		// TODO Auto-generated method stub		
-	}
-	@Override
-	protected <T> void executerCommande(Commande<T> c) 
-	{
 
-		if(c.donneType().matches("QC_CHECK"))
+		for(Map.Entry<ParameterName, Parameter<?>> entry :arg0.get().entrySet())
 		{
-	     	this.checkQCs();
-	     	
-	     	if(this.violated_qcs.size() == 0)
-	     	{
-	     		System.out.println(" All quality constraints are satisfied");
-	     	}
-	     	else
-	     		{
-	     			for(Constraint cons : this.violated_qcs)
-	    	     	{
-	    	     		System.out.println(cons.getName() + " is violated !");
-	    	     	}
-	     		}
-		}
-		else if(c.donneType().matches("DISPLAY_PARAMETERS_VALUES"))
-		{
-	     	for (Map.Entry<ParameterName, Parameter<?>> entry : this.param.get().entrySet()) 
-	    		{
-	     			System.out.println("For " + this.Name +", value of  " + entry.getKey() + " is " + entry.getValue().getValue() +" " + entry.getValue().getUnit());
-	    		}
-		}
-		else if(c.donneType().matches("DECIDE"))
-		{
-	     	apply(this.decide());
-		}
-		else if(c.donneType().matches("RELEVANCECALCULATION"))
-		{
-			this.calculateRelevance();
-		}
-		else if(c.donneType().matches("RELEVANCECALCULATIONDETAILED"))
-		{
-			this.calculateRelevanceDetailed();
-		}
-	}
-	public void apply(Action arg0)
-	{
-		
-	}
-	private void addParameter(Parameter<?> arg0)
-	{
-		this.param.addParameter(arg0);
-		arg0.addObserver(this);
-	}
-	@Override
-	protected void processus() 
-	{
-		if(this.checkQCs())
-		{
-			for(Constraint cons : this.violated_qcs)
-	     	{
-	     		System.out.println(cons.getName() + " is violated !");
-	     	}
-		}
-		else
-		{
-			System.out.println(" There is no violated constraints.");
+			entry.getValue().addObserver(this);
 		}
 	}
 }

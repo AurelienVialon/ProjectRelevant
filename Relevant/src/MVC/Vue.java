@@ -44,4 +44,9 @@ public abstract class Vue extends JFrame implements Observer
 	public String getName(){
 		return this.name;
 	}
+	
+	public void setControleur(Controleur c)
+	{
+		this.c = c;
+	}
 }

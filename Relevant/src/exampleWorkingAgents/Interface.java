@@ -5,17 +5,23 @@ import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Observable;
 
+import javax.swing.JComponent;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultCaret;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
@@ -25,12 +31,17 @@ import MVC.Modele;
 import MVC.SujetMessage;
 import MVC.Vue;
 import parameters.Parameter;
+import sun.management.Agent;
 
 public class Interface extends Vue
 {	
-	HashMap< String, Component > linksComponentsModels = new HashMap<>();
+	HashMap< String, JComponent > linksComponentsModels = new HashMap<>();
 	
 	JPanel generalImput;
+	JPanel agentsImput;
+	
+	HashMap<ParameterName, JComponent> parametersImput = new HashMap<>();
+	HashMap<String, JComponent> agentsParametersImput = new HashMap<>();
 	
 	public Interface() 
 	{
@@ -40,9 +51,11 @@ public class Interface extends Vue
 		this.setSize(1280, 1024);
 
 		this.generalImput = new JPanel();
+		this.agentsImput = new JPanel();
 		
 		this.setLayout(new BorderLayout());
 		this.add(this.generalImput, BorderLayout.PAGE_END);
+		this.add(this.agentsImput, BorderLayout.LINE_END);
 		this.generalImput.setVisible(true);
 			
 		this.setVisible(true);
@@ -51,6 +64,17 @@ public class Interface extends Vue
 	@Override
 	public void update(Observable o, Object ob) 
 	{
+		if(o instanceof Parameter)
+		{
+			if(((Parameter)o).getValue() instanceof Boolean)
+			{
+				((JRadioButton)this.parametersImput.get(((Parameter) o).getName())).setSelected((Boolean)((Parameter) o).getValue());
+			}
+			else
+			{
+				((JTextField)this.parametersImput.get(((Parameter) o).getName())).setText(((Parameter) o).getValue().toString());	
+			}
+		}
 		if(o instanceof WorkingAgent)
 		{
 			if(ob instanceof Message)
@@ -154,6 +178,7 @@ public class Interface extends Vue
 		
 			this.linksComponentsModels.put(((WorkingAgent)arg0).getName(), Toutput);
 
+			
 			this.add(sp);
 		}
 	}
@@ -162,12 +187,133 @@ public class Interface extends Vue
 	{
 		JPanel contenor = new JPanel();
 		JLabel name = new JLabel(p.getName().toString());
-		name.setText(p.getName().toString());
-		JTextField input = new JTextField();
+		JComponent input = null;
+		name.setText(p.getName().toString() +" : ");
+		name.setFont(new Font("serif", Font.PLAIN, 35));
+		
+		if(p.getValue() instanceof Boolean)
+		{
+			input = new JRadioButton("True");
+				
+			((JRadioButton)input).addActionListener(new ActionListener() {
+		        @Override
+		        public void actionPerformed(ActionEvent e) {
+		            JRadioButton btn = (JRadioButton) e.getSource();
+		            Parameter<Boolean> param = (Parameter<Boolean>) p;
+		            param.setValue(btn.isSelected());
+		        }});
+		}
+		else
+		{
+			input = new JTextField(p.getValue().toString());	
+						
+			((JTextField)input).addActionListener(new ActionListener() {
+		        @Override
+		        public void actionPerformed(ActionEvent e) {
+		        	JTextField tf = (JTextField) e.getSource();
+		           
+		        	if(p.getValue() instanceof String)
+		    		{
+		        		Parameter<String> param = (Parameter<String>) p;
+		        		param.setValue(tf.getText());
+		    		}
+		        	else if(p.getValue() instanceof Integer)
+		        	{
+		        		Parameter<Integer> param = (Parameter<Integer>) p;
+		        		param.setValue(Integer.valueOf(tf.getText()));
+		        	}
+		        	
+		        }});
+		}
+		
+		input.setName(p.getName().toString());
+		
+		input.setFont(new Font("serif", Font.PLAIN, 35));
+		name.setFont(new Font("serif", Font.PLAIN, 35));
+		
+		this.parametersImput.put(p.getName(), input);
+		p.addObserver(this);
 		
 		contenor.add(name);
 		contenor.add(input);
 		this.generalImput.add(contenor);
+		contenor.setVisible(true);
+	}
+	public void addAgentInternalParameterImput(String an, Parameter<?> p)
+	{
+		JPanel pa;
+		if(this.agentsParametersImput.containsKey(an))
+		{
+			pa = (JPanel) this.agentsParametersImput.get(an);
+		}
+		else
+		{
+			pa = new JPanel();
+			pa.setName(an);
+			pa.setVisible(true);
+			JLabel l = new JLabel(an+ " : ");
+			l.setText(" Internal Parameters of " + an+ " : ");
+			l.setFont(new Font("serif", Font.PLAIN, 35));
+			
+			pa.setLayout(new GridLayout(0,1));
+			pa.add(l);
+			this.agentsParametersImput.put(an,  pa);
+			this.agentsImput.add(pa);
+		}
+		JPanel contenor = new JPanel();
+		
+		JLabel name = new JLabel(p.getName().toString());
+		JComponent input = null;
+		name.setText(p.getName().toString() +" : ");
+		name.setFont(new Font("serif", Font.PLAIN, 35));
+		
+		if(p.getValue() instanceof Boolean)
+		{
+			input = new JRadioButton("True");
+
+			((JRadioButton)input).addActionListener(new ActionListener() {
+		        @Override
+		        public void actionPerformed(ActionEvent e) {
+		            JRadioButton btn = (JRadioButton) e.getSource();
+		            Parameter<Boolean> param = (Parameter<Boolean>) p;
+		            param.setValue(btn.isSelected());
+		        }});
+		}
+		else
+		{
+			input = new JTextField(p.getValue().toString());	
+
+			((JTextField)input).addActionListener(new ActionListener() {
+		        @Override
+		        public void actionPerformed(ActionEvent e) {
+		        	JTextField tf = (JTextField) e.getSource();
+		           
+		        	if(p.getValue() instanceof String)
+		    		{
+		        		Parameter<String> param = (Parameter<String>) p;
+		        		param.setValue(tf.getText());
+		    		}
+		        	else if(p.getValue() instanceof Integer)
+		        	{
+		        		Parameter<Integer> param = (Parameter<Integer>) p;
+		        		param.setValue(Integer.valueOf(tf.getText()));
+		        	}
+		        	
+		        }});
+		}
+		
+		
+		input.setName(p.getName().toString() + "of" + an);
+		
+		input.setFont(new Font("serif", Font.PLAIN, 35));
+		name.setFont(new Font("serif", Font.PLAIN, 35));
+		
+		this.parametersImput.put(p.getName(), input);
+		p.addObserver(this);
+		
+		contenor.add(name);
+		contenor.add(input);
+		pa.add(contenor);
 		contenor.setVisible(true);
 	}
 }

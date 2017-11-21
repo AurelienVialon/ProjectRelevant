@@ -55,7 +55,10 @@ public abstract class Engine extends Modele
 		return !this.violated_qcs.isEmpty();
 	}
 	
-		
+	public synchronized Parameters getParameters()
+	{
+		return this.param;
+	}
 	public synchronized Parameter<?> getParameter(ParameterName arg0)
 	{
 		return this.param.get(arg0);
